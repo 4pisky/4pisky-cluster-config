@@ -1,0 +1,7 @@
+- hosts: lofar1
+  roles:
+    - casalibs-src
+
+- hosts: lofars
+  tasks:
+    - include: tasks/check-casalibs-ok.yml tags=test

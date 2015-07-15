@@ -1,0 +1,6 @@
+- hosts: trapdeploytest
+  roles:
+    - { role: casalibs-src,
+        casalibs_repo_dir: /opt/repos,
+        casalibs_install_prefix: /opt/soft,
+      }

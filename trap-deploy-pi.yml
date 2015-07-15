@@ -1,0 +1,6 @@
+- hosts: pi1
+  roles:
+    - { role: casalibs-src,
+        casalibs_repo_dir: /home/soft/repos,
+        casalibs_install_prefix: /home/soft/misc/casalibs,
+      }
