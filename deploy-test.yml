@@ -1,6 +1,11 @@
-- hosts: trapdeploytest
+- hosts: deploytest
+
+  pre_tasks:
+    - include: tasks/base.yml tags=base
+
   roles:
     - { role: casalibs-src,
         casalibs_repo_dir: /opt/repos,
         casalibs_install_prefix: /opt/soft,
+        casalibs_build_ncores: 2
       }
