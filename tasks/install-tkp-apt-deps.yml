@@ -1,0 +1,11 @@
+- name: Install tkp apt dependencies for a site/user install.
+  apt: name={{item}} update_cache=yes cache_valid_time=600
+  with_items: "{{ lookup('file', 'files/tkp-site-apt-deps.txt').split() }}"
+  sudo: yes
+  tags: apt
+
+- name: Install tkp apt dependencies for a virtualenv install.
+  apt: name={{item}} update_cache=yes cache_valid_time=600
+  with_items: "{{ lookup('file', 'files/tkp-virtualenv-apt-deps.txt').split() }}"
+  sudo: yes
+  tags: apt

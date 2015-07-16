@@ -5,3 +5,4 @@
 - hosts: lofars
   tasks:
     - include: tasks/check-casalibs-ok.yml tags=test
+    - include: tasks/install-tkp-apt-deps.yml tags=tkp
