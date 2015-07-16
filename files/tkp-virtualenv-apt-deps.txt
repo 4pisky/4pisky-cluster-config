@@ -1,2 +1,2 @@
-postgresql python-psycopg2  libpq-dev
+postgresql-client python-psycopg2 libpq-dev
 wcslib-dev
