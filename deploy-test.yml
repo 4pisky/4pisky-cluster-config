@@ -6,6 +6,6 @@
   roles:
     - { role: casalibs-src,
         casalibs_repo_dir: /opt/repos,
-        casalibs_install_prefix: /opt/soft,
+        casalibs_install_prefix: /opt/soft/casalibs,
         casalibs_build_ncores: 2
       }
