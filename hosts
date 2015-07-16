@@ -3,7 +3,7 @@ lofar[1:7]
 
 [lofars:vars]
 casalibs_repo_dir=/media/RAIDA/repos
-casalibs_install_prefix=/opt/share/soft/casalibs
+casalibs_install_prefix=/opt/share/casalibs
 
 [lofarnodes]
 lofar[2:7]
@@ -13,6 +13,6 @@ pi[1:3]
 
 [pis:vars]
 casalibs_repo_dir=/home/soft/repos
-casalibs_install_prefix=/home/soft/misc/casalibs
+casalibs_install_prefix=/home/soft/casalibs
 
 
