@@ -8,6 +8,10 @@
   apt: name=python-setuptools,python-dev,git update_cache=yes cache_valid_time=600
   sudo: yes
 
+- name: Install various sysmon utils
+  apt: name=htop update_cache=yes cache_valid_time=600
+  sudo: yes
+
 - name: Get pip, wheel, virtualenv
   easy_install: name={{item}}
   sudo: yes

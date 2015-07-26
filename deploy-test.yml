@@ -1,15 +1,13 @@
-- hosts: deploytest
+- hosts: test
 
   pre_tasks:
     - include: tasks/base.yml tags=base
 
   roles:
-    - { role: casalibs-src,
-        casalibs_repo_dir: /opt/repos,
-        casalibs_install_prefix: /opt/soft/casalibs,
-        casalibs_build_ncores: 2,
-      }
-
+    - casalibs-src
 
   tasks:
     - include: tasks/install-tkp-apt-deps.yml tags=tkp
+    - include: tasks/install-lofim-apt-deps.yml tags=lofim
+    - include: tasks/install-lofim.yml tags=lofim
+

@@ -1,0 +1,8 @@
+[test]
+aws1  ansible_ssh_host=awstest
+
+[test:vars]
+lofim_release="2_11_1"
+lofim_repo_dir="/opt/repos/lofar"
+lofim_install_prefix="/opt/lofar"
+lofim_build_ncores=1

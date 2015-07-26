@@ -1,0 +1,78 @@
+- include_vars: secrets/astron_svn_login.yml
+  no_log: True
+
+- set_fact:
+    lofim_tagpath: tags/LOFAR-Release-{{lofim_release}}
+    lofim_install_path: "{{ lofim_install_prefix }}/lofim-{{ lofim_release }}_with-casacore-{{casacore_version}}"
+
+- set_fact:
+    lofim_checkout: "{{lofim_repo_dir}}/{{lofim_tagpath}}/LOFAR"
+
+- name: Stat lofim checkout dir
+  stat:
+    path: "{{lofim_checkout}}"
+  register: lofim_checkout_stat
+
+- name: Checkout LOFAR svn repo (incl LOFAR imaging, i.e. LofIm)
+  subversion:
+    repo: "https://@svn.astron.nl/LOFAR/{{lofim_tagpath}}"
+    dest: "{{ lofim_checkout }}"
+    export: True
+    username: "{{astron_svn_username}}"
+    password: "{{astron_svn_password}}"
+  when: lofim_checkout_stat.stat.exists == False
+
+- name: Create LofIm build-dir
+  file:
+    path: "{{ lofim_checkout }}/build/gnu_opt"
+    state: directory
+  register: lofim_build_dir
+
+- name: Regenerate CMake package list
+  command: "{{ lofim_checkout }}/CMake/gen_LofarPackageList_cmake.sh"
+  args:
+    chdir: "{{ lofim_checkout }}"
+  when: lofim_build_dir|changed
+
+- name: Stat the install path to check if new prefix or version configured
+  stat: path="{{ lofim_install_path }}"
+  register: lofim_install_path_stat
+
+- name: Configure LofIm cmake build
+  shell: >
+            cmake {{lofim_checkout}}
+            -DCASACORE_ROOT_DIR={{ casacore_install_path }}
+            -DPYRAP_ROOT_DIR={{ python_casacore_packagedir }}
+            -DCASAREST_ROOT_DIR={{ casarest_install_path }}
+            -DBUILD_SHARED_LIBS=ON
+            -DBUILD_PACKAGES="LofarFT Offline"
+            -DCMAKE_INSTALL_PREFIX={{ lofim_install_path }}
+            -DUSE_OPENMP=ON
+  args:
+    chdir: "{{ lofim_build_dir.path }}"
+  when: lofim_build_dir|changed or lofim_install_path_stat.stat.exists == False
+  register: lofim_cmake
+  #Ignore errors so we can cleanup the build-dir if this fails:
+  ignore_errors: True
+
+- name: Use all cores if lofim_build_ncores undefined
+  set_fact:
+    lofim_build_ncores: "{{ansible_processor_cores}}"
+  when: lofim_build_ncores is undefined
+
+- name: "lofim make install."
+  shell: "make install -j{{lofim_build_ncores}} > make_install_stdout.log"
+  args:
+    chdir: "{{ lofim_build_dir.path }}"
+  when: lofim_build_dir|changed or lofim_install_path_stat.stat.exists == False
+  register: lofim_make_install
+  ignore_errors: True
+
+
+- name: Clean up failed build
+  file: path="{{ lofim_build_dir.path }}" state=absent
+  when: lofim_cmake|failed or lofim_make_install|failed
+
+- name: Fail a broken build
+  fail: msg "lofim build failed"
+  when: lofim_cmake|failed or lofim_make_install|failed
