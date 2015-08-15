@@ -6,7 +6,7 @@
       when: build_ncores is undefined
 
   roles:
-    - {role: casalibs-src, casalibs_build_ncores: "{{build_ncores}}" }
+    - {role: casalibs-legacy, casalibs_build_ncores: "{{build_ncores}}" }
 
 
   tasks:
@@ -18,7 +18,7 @@
 
 - hosts: pis
   tasks:
-    - include: roles/casalibs-src/tasks/check_casalibs_ok.yml tags=test
+    - include: roles/casalibs-legacy/tasks/check_casalibs_ok.yml tags=test
       vars:
         casalibs_install_prefix: "{{ hostvars['pi1']['casalibs_install_prefix']}}"
 

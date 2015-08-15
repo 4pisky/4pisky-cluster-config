@@ -2,7 +2,7 @@
   no_log: True
 
 - set_fact:
-    lofim_release: "2_11_1"
+    lofim_release: "2_10_3"
   when: lofim_release is undefined
 
 - set_fact:
@@ -48,7 +48,7 @@
   shell: >
             cmake {{lofim_checkout}}
             -DCASACORE_ROOT_DIR={{ casacore_install_path }}
-            -DPYRAP_ROOT_DIR={{ python_casacore_packagedir }}
+            -DPYRAP_ROOT_DIR={{ pyrap_install_path }}
             -DCASAREST_ROOT_DIR={{ casarest_install_path }}
             -DBUILD_SHARED_LIBS=ON
             -DBUILD_PACKAGES="LofarFT Offline"
