@@ -3,7 +3,8 @@ libreadline-dev
 liblog4cxx10-dev
 liblog4cplus-dev
 libblitz0-dev					
-bison						
+bison
+binutils-dev
 flex						
 libgtkmm-2.4-dev
 libhdf5-serial-dev

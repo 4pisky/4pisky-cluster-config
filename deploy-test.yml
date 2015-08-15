@@ -7,11 +7,12 @@
       when: build_ncores is undefined
 
   roles:
-    - casalibs-src
+    - {role: casalibs-src, casalibs_build_ncores: "{{build_ncores}}" }
 
 
   tasks:
     - include: tasks/install-tkp-apt-deps.yml tags=tkp
     - include: tasks/install-lofim-apt-deps.yml tags=lofim
     - include: tasks/install-lofim.yml tags=lofim
+    - include: tasks/install-aoflagger.yml tags=aoflagger
 
