@@ -1,0 +1,72 @@
+
+- name: Create aoflagger repo dir
+  file:
+    path: "{{repo_dir}}/aoflagger/"
+    state: directory
+  register: aoflagger_repo_dir
+
+- name: Create aoflagger install dir with correct permissions
+  file:
+    path: "{{ aoflagger_install_prefix }}/aoflagger-{{ aoflagger_version }}_with-casacore-{{casacore_version}}"
+    state: directory
+    mode: 0755
+    owner: "{{ ansible_user_id }}"
+  sudo: yes
+  register: aoflagger_install_path
+
+- name: Grab aoflagger tarball
+  get_url:
+    url: "http://downloads.sourceforge.net/project/aoflagger/aoflagger-{{ aoflagger_version }}/aoflagger-{{ aoflagger_version }}.tar.bz2"
+    dest: "{{ aoflagger_repo_dir.path }}/aoflagger-{{ aoflagger_version }}.tar.bz2"
+  register: aoflagger_tarball
+
+- set_fact:
+    aoflagger_checkout_path: "{{ aoflagger_repo_dir.path }}/aoflagger-{{ aoflagger_version }}"
+
+- name: Unpack aoflagger tarball
+  unarchive:
+    copy: no
+    src: "{{ aoflagger_tarball.dest }}"
+    dest: "{{ aoflagger_repo_dir.path }}"
+    creates: "{{ aoflagger_checkout_path }}"
+#    creates: "{{casalibs_repo_dir}}/casacore-{{casacore_version}}"
+  register: aoflagger_checkout
+
+
+- name: Create aoflagger build-dir
+  file:
+    path: "{{ aoflagger_checkout_path }}/build"
+    state: directory
+  register: aoflagger_build_dir
+
+- name: Stat the install path to check if new prefix or version configured
+  stat: path="{{ aoflagger_install_path.path }}"
+  register: aoflagger_install_path_stat
+
+- name: Configure aoflagger cmake build
+  command: >
+            cmake ..  -DCMAKE_INSTALL_PREFIX={{aoflagger_install_path.path}} \
+              -DCMAKE_PREFIX_PATH={{ casacore_install_path }}
+  args:
+    chdir: "{{ aoflagger_build_dir.path }}"
+  when: aoflagger_build_dir|changed or aoflagger_install_path_stat.stat.exists == False
+  register: aoflagger_cmake
+  #Ignore errors so we can cleanup the build-dir if this fails:
+  ignore_errors: True
+
+- name: "aoflagger make install."
+  shell: "make install -j{{build_ncores}} > make_install_stdout.log"
+  args:
+    chdir: "{{ aoflagger_build_dir.path }}"
+  when: aoflagger_build_dir|changed or aoflagger_install_path_stat.stat.exists == False
+  register: aoflagger_make_install
+  ignore_errors: True
+
+
+- name: Clean up failed build
+  file: path="{{ aoflagger_build_dir.path }}" state=absent
+  when: aoflagger_cmake|failed or aoflagger_make_install|failed
+
+- name: Fail a broken build
+  fail: msg "aoflagger build failed"
+  when:  aoflagger_cmake|failed or aoflagger_make_install|failed
