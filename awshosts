@@ -3,7 +3,7 @@ aws1  ansible_ssh_host=awstest
 
 [test:vars]
 repo_dir="/opt/repos"
-lofim_release="2_10_3"
+lofim_release="2_11_1"
 lofim_repo_dir="{{repo_dir}}/lofar"
 lofim_install_prefix="/opt/lofar"
 #build_ncores=1
