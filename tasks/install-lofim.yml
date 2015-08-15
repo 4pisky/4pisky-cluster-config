@@ -24,7 +24,7 @@
 
 - name: Create LofIm build-dir
   file:
-    path: "{{ lofim_checkout }}/build/gnu_opt"
+    path: "{{ lofim_checkout }}/build_with_casacore-{{ casacore_version }}/gnu_opt"
     state: directory
   register: lofim_build_dir
 
