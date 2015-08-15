@@ -55,13 +55,9 @@
   #Ignore errors so we can cleanup the build-dir if this fails:
   ignore_errors: True
 
-- name: Use all cores if lofim_build_ncores undefined
-  set_fact:
-    lofim_build_ncores: "{{ansible_processor_cores}}"
-  when: lofim_build_ncores is undefined
 
 - name: "lofim make install."
-  shell: "make install -j{{lofim_build_ncores}} > make_install_stdout.log"
+  shell: "make install -j{{ build_ncores }} > make_install_stdout.log"
   args:
     chdir: "{{ lofim_build_dir.path }}"
   when: lofim_build_dir|changed or lofim_install_path_stat.stat.exists == False

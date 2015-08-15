@@ -25,5 +25,5 @@ test  ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222
 lofim_release="2_11_1"
 lofim_repo_dir="/opt/repos/lofar"
 lofim_install_prefix="/opt/lofar"
-lofim_build_ncores=2
+#build_ncores=2
 
