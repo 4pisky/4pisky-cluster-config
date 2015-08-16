@@ -23,7 +23,7 @@
 
 - hosts: lofars
   tasks:
-    - include: tasks/check-casalibs-ok.yml tags=test
+    - include: roles/casalibs-src/tasks/check_casalibs_ok.yml tags=test
       vars:
         casalibs_install_prefix: "{{ hostvars['lofar1']['casalibs_install_prefix']}}"
 
