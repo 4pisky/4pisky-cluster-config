@@ -5,7 +5,7 @@ lofar[1:7]
 
 [lofars:vars]
 repo_dir="/media/RAIDA/repos"
-default_install_prefix="/opt/share"
+default_install_prefix="/opt/share/newbuilds"
 
 [lofarnodes]
 lofar[2:7]

@@ -1,8 +1,31 @@
 - hosts: lofar1
+
+  pre_tasks:
+    - set_fact:
+        build_ncores: "{{ansible_processor_cores}}"
+      when: build_ncores is undefined
+
   roles:
-    - casalibs-src
+    - {role: casalibs-src, casalibs_build_ncores: "{{build_ncores}}" }
+
+  tasks:
+    - name: Create install dir and repo dir with correct permissions
+      file: path={{ item }} state=directory mode=0755 owner={{ansible_user_id}}
+      with_items:
+        - repo_dir
+        - default_install_prefix
+      sudo: yes
+
+    - include: tasks/install-lofim-apt-deps.yml tags=lofim
+    - include: tasks/install-tkp-apt-deps.yml tags=tkp
+    - include: tasks/install-lofim.yml tags=lofim
+    - include: tasks/install-aoflagger.yml tags=aoflagger
 
 - hosts: lofars
   tasks:
     - include: tasks/check-casalibs-ok.yml tags=test
+    - include: tasks/install-lofim-apt-deps.yml tags=lofim
     - include: tasks/install-tkp-apt-deps.yml tags=tkp
+
+
+
