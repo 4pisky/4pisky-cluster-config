@@ -20,7 +20,7 @@
   tasks:
     - include: roles/casalibs-src/tasks/check_casalibs_ok.yml tags=test
       vars:
-        casalibs_install_prefix: "{{ hostvars['lofar1']['casalibs_install_prefix']}}"
+        casalibs_install_prefix: "{{ hostvars['pi1']['casalibs_install_prefix']}}"
 
     - include: tasks/install-lofim-apt-deps.yml tags=lofim
     - include: tasks/install-tkp-apt-deps.yml tags=tkp
