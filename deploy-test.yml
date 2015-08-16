@@ -11,19 +11,12 @@
 
 
   tasks:
-
-    - name: Create install dir and repo dir with correct permissions
-      file: path={{ item }} state=directory mode=0755 owner={{ansible_user_id}}
-      with_items:
-        - repo_dir
-        - default_install_prefix
-      sudo: yes
+    - include: tasks/create_top_dirs.yml tags=sudo
+    - include: tasks/install-lofim-apt-deps.yml tags=lofim,sudo
+    - include: tasks/install-tkp-apt-deps.yml tags=tkp,sudo
+    - include: tasks/install-lofim.yml tags=lofim
+    - include: tasks/install-aoflagger.yml tags=aoflagger
 
     - include: roles/casalibs-src/tasks/check_casalibs_ok.yml tags=test
       vars:
         casalibs_install_prefix: "{{ hostvars['test']['casalibs_install_prefix']}}"
-    - include: tasks/install-tkp-apt-deps.yml tags=tkp
-    - include: tasks/install-lofim-apt-deps.yml tags=lofim
-    - include: tasks/install-lofim.yml tags=lofim
-    - include: tasks/install-aoflagger.yml tags=aoflagger
-
