@@ -1,0 +1,6 @@
+- name: Create install dir and repo dir with correct permissions
+  file: path={{ item }} state=directory mode=0755 owner={{ansible_user_id}}
+  with_items:
+    - "{{ repo_dir }}"
+    - "{{ default_install_prefix }}"
+  sudo: yes
