@@ -3,8 +3,3 @@
   with_items: "{{ lookup('file', 'files/lofar-apt-deps-ubuntu-12.04-14.04.txt').split() }}"
   sudo: yes
   tags: apt
-
-
-- name: Create install dir with correct permissions
-  file: path={{ lofim_install_prefix }} state=directory mode=0755 owner={{ansible_user_id}}
-  sudo: yes
