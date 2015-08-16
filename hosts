@@ -7,6 +7,7 @@ lofar[1:7]
 repo_dir="/media/RAIDA/repos"
 default_install_prefix="/opt/share/newbuilds"
 
+
 [lofarnodes]
 lofar[2:7]
 
@@ -25,7 +26,6 @@ aws1  ansible_ssh_host=awstest
 [test:vars]
 repo_dir="/opt/repos"
 default_install_prefix="/opt/foosoft"
-lofim_release="2_11_1"
 #build_ncores=2
 
 aoflagger_version="2.7.0"

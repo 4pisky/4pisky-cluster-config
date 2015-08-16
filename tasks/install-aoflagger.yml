@@ -1,3 +1,6 @@
+- set_fact:
+    aoflagger_version: "2.7.0"
+  when: aoflagger_version is undefined
 
 - name: Create aoflagger repo dir
   file:
@@ -44,7 +47,8 @@
 
 - name: Configure aoflagger cmake build
   command: >
-            cmake ..  -DCMAKE_INSTALL_PREFIX={{aoflagger_install_path.path}} \
+            cmake .. \
+              -DCMAKE_INSTALL_PREFIX={{aoflagger_install_path.path}} \
               -DCMAKE_PREFIX_PATH={{ casacore_install_path }}
   args:
     chdir: "{{ aoflagger_build_dir.path }}"

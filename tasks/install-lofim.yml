@@ -2,6 +2,10 @@
   no_log: True
 
 - set_fact:
+    lofim_release: "2_11_1"
+  when: lofim_release is undefined
+
+- set_fact:
     lofim_repo_prefix: "{{repo_dir}}/lofar"
     lofim_install_prefix: "{{ default_install_prefix}}/lofar"
     lofim_tagpath: "tags/LOFAR-Release-{{lofim_release}}"

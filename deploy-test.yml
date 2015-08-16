@@ -3,7 +3,7 @@
   pre_tasks:
     - include: tasks/base.yml tags=base
     - set_fact:
-        build_ncores: "{{ansible_processor_cores}}"
+        build_ncores: "{{ ansible_processor_vcpus }}"
       when: build_ncores is undefined
 
   roles:
@@ -20,6 +20,8 @@
       sudo: yes
 
     - include: tasks/check-casalibs-ok.yml tags=test
+      vars:
+        casalibs_install_prefix: "{{ hostvars['test']['casalibs_install_prefix']}}"
     - include: tasks/install-tkp-apt-deps.yml tags=tkp
     - include: tasks/install-lofim-apt-deps.yml tags=lofim
     - include: tasks/install-lofim.yml tags=lofim
