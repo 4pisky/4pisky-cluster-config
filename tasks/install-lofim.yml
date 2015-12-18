@@ -2,7 +2,7 @@
   no_log: True
 
 - set_fact:
-    lofim_release: "2_11_1"
+    lofim_release: "2_14_0"
   when: lofim_release is undefined
 
 - set_fact:
@@ -13,6 +13,9 @@
 - set_fact:
     lofim_checkout: "{{lofim_repo_prefix}}/{{lofim_tagpath}}/LOFAR"
     lofim_install_path: "{{ lofim_install_prefix }}/lofim-{{ lofim_release }}_with-casacore-{{casacore_version}}"
+
+- set_fact:
+    lofim_patches_repo: "{{lofim_repo_prefix}}/lofim-patches"
 
 - name: Stat lofim checkout dir
   stat:
@@ -27,6 +30,25 @@
     username: "{{astron_svn_username}}"
     password: "{{astron_svn_password}}"
   when: lofim_checkout_stat.stat.exists == False
+
+- name: Clone the LofIm patches repository
+  git:
+    repo: https://github.com/4pisky/4pisky-lofim-patches.git
+    dest: "{{ lofim_patches_repo }}"
+    version: "{{ lofim_patches_branch }}"
+
+
+- name: List LofIm patches
+  find: paths="{{ lofim_patches_repo }}" patterns="*.patch"
+  register: lofim_patch_list
+
+- name: Apply LofIm patches
+  command: "git apply {{ item.path }}"
+  args:
+    chdir: "{{ lofim_checkout }}"
+  with_items: "{{ lofim_patch_list.files }}"
+  when: lofim_checkout_stat.stat.exists == False
+
 
 - name: Create LofIm build-dir
   file:
@@ -76,5 +98,5 @@
   when: lofim_cmake|failed or lofim_make_install|failed
 
 - name: Fail a broken build
-  fail: msg "lofim build failed"
+  fail: msg="lofim build failed"
   when: lofim_cmake|failed or lofim_make_install|failed

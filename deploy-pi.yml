@@ -14,6 +14,8 @@
     - include: tasks/install-lofim-apt-deps.yml tags=lofim,sudo
     - include: tasks/install-tkp-apt-deps.yml tags=tkp,sudo
     - include: tasks/install-lofim.yml tags=lofim
+      vars:
+        lofim_patches_branch: "pi-cluster"
     - include: tasks/install-aoflagger.yml tags=aoflagger
 
 - hosts: pis

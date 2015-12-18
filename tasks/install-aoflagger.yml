@@ -1,5 +1,5 @@
 - set_fact:
-    aoflagger_version: "2.7.0"
+    aoflagger_version: "2.7.1"
   when: aoflagger_version is undefined
 
 - name: Create aoflagger repo dir
@@ -18,7 +18,9 @@
 
 - name: Grab aoflagger tarball
   get_url:
-    url: "http://downloads.sourceforge.net/project/aoflagger/aoflagger-{{ aoflagger_version }}/aoflagger-{{ aoflagger_version }}.tar.bz2"
+#    url: "http://downloads.sourceforge.net/project/aoflagger/aoflagger-{{ aoflagger_version }}/aoflagger-{{ aoflagger_version }}.tar.bz2"
+      # Manually fixed url:
+    url: http://downloads.sourceforge.net/project/aoflagger/aoflagger-2.7.0/aoflagger-{{ aoflagger_version }}.tar.bz2
     dest: "{{ aoflagger_repo_prefix.path }}/aoflagger-{{ aoflagger_version }}.tar.bz2"
   register: aoflagger_tarball
 
@@ -71,7 +73,7 @@
   when: aoflagger_cmake|failed or aoflagger_make_install|failed
 
 - name: Fail a broken build
-  fail: msg "aoflagger build failed"
+  fail: msg="aoflagger build failed"
   when:  aoflagger_cmake|failed or aoflagger_make_install|failed
 
 - name: Symlink aoflagger into the LofIm bin dir

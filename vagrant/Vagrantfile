@@ -3,7 +3,7 @@
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty64"
-  config.vm.define "deploytest" do |deploytest| end
+  config.vm.define "fpsclustervm" do |fpsclustervm| end
 
   config.vm.provider "virtualbox" do |v|
       v.memory = 4048
@@ -13,6 +13,9 @@ Vagrant.configure(2) do |config|
   config.vm.provision "ansible" do |ansible|
       ansible.playbook = "../deploy-test.yml"
       ansible.verbose = "vv"
+      ansible.groups = {
+      "test" => ["fpsclustervm"],
+      }
   end
  
   if Vagrant.has_plugin?("vagrant-cachier")
