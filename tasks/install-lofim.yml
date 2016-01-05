@@ -54,6 +54,7 @@
   file:
     path: "{{ lofim_checkout }}/build_with_casacore-{{ casacore_version }}/gnu_opt"
     state: directory
+    owner: "{{ ansible_user_id }}"
   register: lofim_build_dir
 
 - name: Regenerate CMake package list
