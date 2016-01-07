@@ -1,0 +1,48 @@
+- hosts: pi1
+  vars:
+    - banana_repo_path: "{{ default_install_prefix }}/banana/{{ banana_version_shortname }}"
+    - banana_venv: "{{ default_install_prefix }}/banana/venvs/{{ banana_version_shortname }}"
+    - banana_apache_user: "www-data"
+    - banana_apache_sitename: "pi"
+    - banana_apache_subsite_dir: "pi-subsites"
+    - trap_databases:
+        - "Gosia"
+        - "adam_CHILES_analysis"
+        - "adam_CHILES_autoruns"
+        - "adam_CHILES_initial"
+        - "adam_V404Cyg"
+        - "gemma"
+        - "gemma_master"
+        - "gemma_v2"
+        - "rushton"
+        - "staley"
+
+  pre_tasks:
+    - name: Add bananaserve user to postgres
+      postgresql_user:
+        name: "{{ banana_postgres_username }}"
+        password: "{{ banana_postgres_password }}"
+      become: yes
+      become_user: "postgres"
+
+  roles:
+      - { role: timstaley.banana,
+          banana_version: "master" }
+      - { role: timstaley.banana,
+        banana_version: "release-2" }
+
+
+  tasks:
+    - name: Grant read-only privs for Banana on TraP databases
+      postgresql_privs:
+        db: "{{ item }}"
+        privs: SELECT
+        objs: ALL_IN_SCHEMA
+        type: table
+        schema: public
+        roles: "{{ banana_postgres_username }}"
+        login: "postgres"
+      become: yes
+      become_user: "postgres"
+      tags: privs
+      with_items: trap_databases
