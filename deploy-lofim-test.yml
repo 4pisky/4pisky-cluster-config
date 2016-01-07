@@ -1,12 +1,16 @@
 - hosts: test
 
   pre_tasks:
-    - include: tasks/base.yml tags=base
     - set_fact:
         build_ncores: "{{ ansible_processor_vcpus }}"
       when: build_ncores is undefined
 
+  vars:
+    postgresql_version: 9.1
+
   roles:
+    - {role: timstaley.base}
+    - {role: ANXS.postgresql, sudo: true }
     - {role: casalibs-src, casalibs_build_ncores: "{{build_ncores}}" }
 
 
