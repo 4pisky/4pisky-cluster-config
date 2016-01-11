@@ -14,7 +14,7 @@
         - "gemma"
         - "gemma_master"
         - "gemma_v2"
-        - "rushton"
+        - "arushton"
         - "staley"
 
   pre_tasks:
