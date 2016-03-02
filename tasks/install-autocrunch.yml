@@ -1,0 +1,21 @@
+
+- name: Clone autocruncher repo
+  git:
+    repo: https://github.com/4pisky/autocrunch-alarrm.git
+    dest: "{{ autocrunch_repo_dir }}"
+    version: "{{ autocrunch_version }}"
+    force: true
+  notify:
+    - restart autocrunch
+
+- name: Create autocrunch venv
+  pip:
+    requirements: "{{ autocrunch_repo_dir }}/requirements.txt"
+    virtualenv: "{{ autocrunch_venv }}"
+
+- name: Install autocrunch routines into venv
+  pip:
+    name: "git+file://{{ autocrunch_repo_dir }}#egg=autocrunch"
+    virtualenv: "{{ autocrunch_venv }}"
+
+

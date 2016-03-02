@@ -1,0 +1,36 @@
+- hosts: pi1
+  vars:
+    - autocrunch_user: "staley"
+    - autocrunch_repo_dir: "{{ default_install_prefix }}/autocrunch/autocrunch"
+    - autocrunch_venv: "{{ default_install_prefix }}/autocrunch/autocrunch_venv"
+    - autocrunch_version: "master"
+
+    - autocrunch_ami_dir: "/home/amicamb/ami"
+    - autocrunch_casapy_dir: "/home/soft/misc/builds/casa-release-4.5.0-el6"
+    - autocrunch_output_dir: "/home/obs_data/amidc_autocrunch"
+
+
+  tasks:
+    - include: tasks/install-autocrunch.yml
+      become: yes
+      become_user: "{{ autocrunch_user }}"
+
+    - name: Upload upstart init-script
+      template:
+        src: autocrunch-upstart-init.conf.j2
+        dest: /etc/init/autocrunch.conf
+        owner: root
+        group: root
+        mode: "u=rw,g=r,o=r"
+      become: yes
+      #Restart service if init-script has changed:
+      notify:
+        - restart autocrunch
+      tags: config
+
+
+  handlers:
+    - name: restart autocrunch
+      service: name=autocrunch state=restarted
+      become: yes
+

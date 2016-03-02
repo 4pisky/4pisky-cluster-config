@@ -1,0 +1,17 @@
+description "Autocruncher"
+author "Tim Staley <tim.staley@physics.ox.ac.uk>"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+# Automatically restart process if crashed
+#respawn
+
+env  HOME="/home/{{ autocrunch_user }}"
+env AUTOCRUNCH_AMI_DIR="{{ autocrunch_ami_dir }}"
+env AUTOCRUNCH_CASA_DIR="{{ autocrunch_casapy_dir }}"
+env AUTOCRUNCH_OUTPUT_DIR="{{ autocrunch_output_dir }}"
+
+exec su {{ autocrunch_user }} -m -c "{{ autocrunch_venv }}/bin/python \
+    {{ autocrunch_repo_dir }}/monitor.py \
+    > /home/{{ autocrunch_user }}/autocrunch.log 2>&1"
