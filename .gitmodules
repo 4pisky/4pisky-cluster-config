@@ -1,6 +1,0 @@
-[submodule "roles/casalibs-src"]
-	path = roles/casalibs-src
-	url = git@github.com:timstaley/ansible-casalibs-src.git
-[submodule "roles/casalibs-legacy"]
-	path = roles/casalibs-legacy
-	url = git@github.com:timstaley/ansible-casalibs-legacy.git

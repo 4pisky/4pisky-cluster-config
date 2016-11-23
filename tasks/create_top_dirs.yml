@@ -3,4 +3,4 @@
   with_items:
     - "{{ repo_dir }}"
     - "{{ default_install_prefix }}"
-  sudo: yes
+  become: yes

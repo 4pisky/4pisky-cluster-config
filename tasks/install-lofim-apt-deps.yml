@@ -1,5 +1,13 @@
-- name: Install LOFAR apt dependencies
+- name: Install LOFAR apt dependencies (12.04/14.04)
   apt: name={{item}} update_cache=yes cache_valid_time=600
   with_items: "{{ lookup('file', 'files/lofar-apt-deps-ubuntu-12.04-14.04.txt').split() }}"
-  sudo: yes
+  become: yes
   tags: apt
+  when: "{{ ansible_distribution_release != 'xenial' }}"
+
+- name: Install LOFAR apt dependencies (16.04)
+  apt: name={{item}} update_cache=yes cache_valid_time=600
+  with_items: "{{ lookup('file', 'files/lofar-apt-deps-ubuntu-16.04.txt').split() }}"
+  become: yes
+  tags: apt
+  when: "{{ ansible_distribution_release == 'xenial' }}"

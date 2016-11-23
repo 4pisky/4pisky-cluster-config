@@ -6,24 +6,28 @@
       when: build_ncores is undefined
 
   vars:
-    postgresql_version: 9.1
+    build_ncores: 2
+    postgresql_version: 9.5
+    casacore_github_version: "2.1.0"
+    lofim_release: "2_19_0"
+    casarest_svn_rev: "8765"
 
   roles:
     - {role: timstaley.base}
-    - {role: ANXS.postgresql, sudo: true }
-    - {role: casalibs-src, casalibs_build_ncores: "{{build_ncores}}" }
+    - {role: ANXS.postgresql, become: true}
+    - {role: timstaley.casalibs-src, casalibs_build_ncores: "{{ build_ncores }}" }
 
 
   tasks:
     - include: tasks/create_top_dirs.yml tags=sudo
     - include: tasks/install-lofim-apt-deps.yml tags=lofim,sudo
     - include: tasks/install-tkp-apt-deps.yml tags=tkp,sudo
+    - include: tasks/install-aoflagger.yml tags=aoflagger
     - include: tasks/install-lofim.yml tags=lofim
       vars:
         lofim_patches_branch: "pi-cluster"
-    - include: tasks/install-aoflagger.yml tags=aoflagger
 
-    - include: roles/casalibs-src/tasks/check_casalibs_ok.yml
+    - include: galaxy_roles/timstaley.casalibs-src/tasks/check_casalibs_ok.yml
       tags: test
       vars:
         casalibs_install_prefix: "{{ hostvars[inventory_hostname]['casalibs_install_prefix']}}"

@@ -52,7 +52,7 @@
 
 - name: Create LofIm build-dir
   file:
-    path: "{{ lofim_checkout }}/build_with_casacore-{{ casacore_version }}/gnu_opt"
+    path: "{{ lofim_checkout }}/build_with_casacore-{{ casacore_version }}/gnucxx11_optarch"
     state: directory
     owner: "{{ ansible_user_id }}"
   register: lofim_build_dir
@@ -69,14 +69,17 @@
 
 - name: Configure LofIm cmake build
   shell: >
-            cmake {{lofim_checkout}}
+            cmake
             -DCASACORE_ROOT_DIR={{ casacore_install_path }}
             -DPYRAP_ROOT_DIR={{ python_casacore_packagedir }}
-            -DCASAREST_ROOT_DIR={{ casarest_install_path }}
             -DBUILD_SHARED_LIBS=ON
-            -DBUILD_PACKAGES="LofarFT Offline"
+            -DBUILD_PACKAGES="Offline"
             -DCMAKE_INSTALL_PREFIX={{ lofim_install_path }}
             -DUSE_OPENMP=ON
+            -DCASAREST_ROOT_DIR={{ casarest_install_path }}
+            -DAOFLAGGER_ROOT_DIR={{ aoflagger_install_path.path }}
+            -DMAKE_AOFlagger=OFF
+            {{lofim_checkout}}
   args:
     chdir: "{{ lofim_build_dir.path }}"
   when: lofim_build_dir|changed or lofim_install_path_stat.stat.exists == False

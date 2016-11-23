@@ -1,0 +1,11 @@
+- src: timstaley.base
+  version: master
+
+- src: timstaley.casalibs-src
+  version: master
+
+- src: timstaley.banana
+  version: master
+
+- src: ANXS.postgresql
+

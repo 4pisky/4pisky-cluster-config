@@ -1,5 +1,5 @@
 - set_fact:
-    aoflagger_version: "2.7.1"
+    aoflagger_version: "2.8.0"
   when: aoflagger_version is undefined
 
 - name: Create aoflagger repo dir
@@ -20,7 +20,7 @@
   get_url:
 #    url: "http://downloads.sourceforge.net/project/aoflagger/aoflagger-{{ aoflagger_version }}/aoflagger-{{ aoflagger_version }}.tar.bz2"
       # Manually fixed url:
-    url: http://downloads.sourceforge.net/project/aoflagger/aoflagger-2.7.0/aoflagger-{{ aoflagger_version }}.tar.bz2
+    url: http://downloads.sourceforge.net/project/aoflagger/aoflagger-{{ aoflagger_version }}/aoflagger-{{ aoflagger_version }}.tar.bz2
     dest: "{{ aoflagger_repo_prefix.path }}/aoflagger-{{ aoflagger_version }}.tar.bz2"
   register: aoflagger_tarball
 
@@ -49,9 +49,12 @@
 
 - name: Configure aoflagger cmake build
   command: >
-            cmake .. \
+            cmake \
               -DCMAKE_INSTALL_PREFIX={{ aoflagger_install_path.path }} \
-              -DCMAKE_PREFIX_PATH={{ casacore_install_path }}
+              -DCMAKE_PREFIX_PATH={{ casacore_install_path }} \
+              -DBUILD_SHARED_LIBS=ON \
+              -DCMAKE_CXX_FLAGS="--std=c++11 -O2 -DNDEBUG" \
+              {{ aoflagger_checkout_path }}
   args:
     chdir: "{{ aoflagger_build_dir.path }}"
   when: aoflagger_build_dir|changed or aoflagger_install_path_stat.stat.exists == False
@@ -76,8 +79,8 @@
   fail: msg="aoflagger build failed"
   when:  aoflagger_cmake|failed or aoflagger_make_install|failed
 
-- name: Symlink aoflagger into the LofIm bin dir
-  file:
-    state: link
-    src: "{{ aoflagger_install_path.path }}/bin/aoflagger"
-    dest: "{{ lofim_install_path }}/bin/aoflagger"
+#- name: Symlink aoflagger into the LofIm bin dir
+#  file:
+#    state: link
+#    src: "{{ aoflagger_install_path.path }}/bin/aoflagger"
+#    dest: "{{ lofim_install_path }}/bin/aoflagger"
